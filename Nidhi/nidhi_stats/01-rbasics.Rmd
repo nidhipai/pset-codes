@@ -1,0 +1,87 @@
+# R Basics
+
+## Install Packages & Load them
+install.package("package name")
+library(packagename)
+
+
+## Basic Rules (Ch 4 R4DS)
+
+The assigment operator `<-` is how you create objects: you use `object_name <- value`.
+
+Rules for object names: Must start with a letter and only contain letters, numbers, and _
+
+You can inspect an object by typing its name out.
+
+R is case-sensitive!
+
+You can add a comment with the hashtag `#`. It won't run.
+
+```{r}
+x <- 3 * 4
+x # inspecting x
+```
+
+Surrounding an object in parentheses combines the above statements and lets you print the value of the object to the console in the same line.
+
+```{r}
+(x <- 3 * 4)
+```
+Vectors - all the same type of data
+List - anything
+Dataframe - tables with anything in it
+  Does everything in the same col need to be the same type - yes!
+stats of doom - first three videos
+
+## Functions
+
+A function is a block of code that is "bow-tied" together to achieve a specific purpose. In R, you'll pass in some object as arguments, and the function will return some calculation based off those arguments.
+(This is called "pass by value", since the input itself is not changed outside the function. Some languages (such as Java) have "pass by reference functions", in which a function can modify the value of its arguments.)
+
+R has a lot of built in, pre-defined functions, and you can also write your own functions. The textbook uses `seq()` as an example of a function. The function `seq()` takes in two arguments, and returns a sequence of numbers between the two arguments (including the arguments). Note that since we don't assing the result to a variable, it prints to the console.
+
+
+```{r}
+seq(1, 10)
+```
+The third argument will give the interval between numbers.
+
+```{r}
+seq(1, 10, 4)
+```
+How do you know what function you need? Google it!
+
+How do you know what a given function does, and what parameters it needs? Also Google it, but you will probably find yourself on the documentation for R. For example, the first result for googling "seq R" leads to [this documentation page](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/seq). It tells you how to use it, the arguments, what it returns, and gives some examples. Documentation can be a little hard to parse, and for common functions, you can usually find a GeeksForGeeks article that boils it down.
+
+
+## R Studio & Jupyter Workflow (Ch 6 R4DS)
+
+R Studio is an integrated development environment (IDE) for R. That means it is a text editor plus a bunch of useful tools to make your life easier.
+
+If you open R Studio, you'll see 4 areas of the screen. The bottom left is the console, where you can type commands and execute them one by one. The top left is where you can write scripts, notebooks, and code. The top right shows the environment - the objects and data you have created so far. The bottom right will show a file explorer, plots generated, a help feature, and some other stuff. This layout is pretty customizable.
+
+This is how I think of programming in R. R commands operate on objects. These objects are stored in the environment. You can create, or modify, objects using either the console or running scripts. You can enter commands in the console to run them one by one, but that's not super efficient. Scripts allow you to bundle together a bunch of commands, including loading the data & packages. You can run a particular command by highlighting it and hitting Ctrl+Enter. You can also run the entire script with Ctrl+Shift+S.
+
+Jupyter notebook is like a fancy script. Each cell is like running a individual command in the console. But, if you hit Cell -> Run All, it will run all of your commands sequentially, just like a script. You can hit Kernal -> Restart & Run All to also clear the environment before running the code.
+
+This point is kind of subtle: if you run the same script twice without clearing your environment, depending on your code, it may not be the same as running it once. Suppose you create an object in one script, and then run some action on it in another script. You will do that action twice on the object.
+
+```{r}
+x <- 2
+```
+
+```{r}
+# running this causes x to keep increasing
+x <- x + 2
+x
+```
+## Projects in R Studio (Ch 8 R4DS)
+
+The highlight of Ch 8 is that your environment should always be reproducible from your scripts. That is, you should not only store the result of a calculation in the environment, but also the calculation itself in your code.
+
+For a given session, R will put all the files in the working directory. This working directory is labeled right above your console, and it should be a folder associated with the project you are on. You can change this with Session > Set Working Directory > Choose Directory.
+
+You can create a new project with File > New Project. This bundles input data, R scripts, results, and plots.
+
+
+

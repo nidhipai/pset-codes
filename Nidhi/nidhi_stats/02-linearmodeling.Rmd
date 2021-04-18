@@ -1,0 +1,160 @@
+# General Linear Model
+
+```{r message=FALSE}
+library(stats)
+library(ggplot2)
+library(dplyr)
+```
+
+
+## Loading the data
+
+These examples use the [`trees`](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/trees.html) dataset. We load the data set, save it as `arr`.
+
+```{r}
+data("trees")
+arr <- trees
+head(arr)
+```
+
+There are 31 observations on 3 variables.
+
+- Girth	(numeric):	Tree diameter (rather than girth, actually) in inches
+- Height (numeric):	Height in ft
+- Volume (numeric):	Volume of timber in cubic ft
+
+## Mean, Variance, and Standard Deviation
+
+Here are the formulas for mean, variance, and standard deviation.
+
+|     | Sample | Population
+|-----|---------|----------------
+| Mean | $$ \overline{x} = \frac{1}{n} \sum_{i = 1}^n x_i, $$ | $$ \mu = \frac{1}{N} \sum_{i = 1}^N x_i, $$
+| Variance | $$S^2 = \frac{\sum_{i = 1}^n (x_i - \overline{x})}{n-1}$$ | $$\sigma^2 = \frac{\sum_{i = 1}^N (x_i - \mu)}{N}$$
+
+$n$ is the number of observations in the sample and the values of the observations are $x_i$. 
+
+Why is the sample variance over $n - 1$ and not $n$?
+TODO: INSERT DERIVATION FROM STATS
+
+We can calculate the average height of a tree using the `mean` command in base R:
+```{r}
+mean(arr$Height)
+```
+So the average tree is 76 feet tall.
+
+
+## Simple Linear Regression
+In simple linear regression, there is one predictor (independent) variable and one outcome (dependent) variable. In this dataset, we can try to use height to predict volume. The set up for the problem is a set of points $(x, y)$, one for each tree, where $x$ is the height and $y$ is the volume. We want a line that expresses the relationship between these two variables. Our data looks like this:
+
+```{r}
+ggplot(arr, aes(x=Height, y=Volume)) + 
+  geom_point()
+```
+The linear model of these points is $(x, y)$, is
+$$Y_i = \alpha + \beta x_i + \epsilon_i .$$
+We are predicting the $y_i$ as $Y_i$, which is a random variable. The $\alpha$ and the $\beta$ are the coefficients from the line that best fits the data. However, a linear model most likely won't fit all the points perfectly, so we also add $\epsilon_i$ from $N(0, \sigma^2)$. To find $\alpha$ and $\beta$, we use maximum likelihood estimation for $\alpha$, $\beta$, and $\sigma^2$. This method is called the method of least squares and the coefficients are the least square estimates. The formula (not that it'll ever need to be done by hand) is
+$$ \hat{\alpha} = \overline{y} $$
+$$ \hat{\beta} = \frac{\sum_{i=1}^n y_i (x_i - \overline{x})}{\sum_{i = 1}^n (x_i - \overline{x}^2)^2}.$$
+We can use this method for $\sigma$ too but it's not particularly insightful. The $i$th residual is (actual - expected), that is $Y_i - \hat{Y_i}$. Without rounding error, the residuals also sum to zero. Our fomula minimizes the sum of the squared residuals (SSR), which is also called the sum of squared estimate of errors (SSE).
+
+In R, [`lm`](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/lm) is used to fit linear models. It can actually do a lot more than simple (or even multiple regression), but we can start with specifying the data set as well as the independent and dependent variables. We write `dependent variable ~ independent variable`, which we can read as "predict (dependent variable) as a function of (independent variable)". So in this case, we want to predict `Volume`as a function of `Height`. Then `lm` will give us a linear function where the input is `Height` and the output is `Volume`.
+
+```{r}
+linmod <- lm(Volume ~ Height, data = arr) 
+linmod
+```
+The call to `lm` returns two coefficients, one for the intercept and one for the contribution of `Height`. Then the line that `lm` gave us is
+$$y = 1.543x - 87.124,$$
+where $x$ is `Height` and $y$ is `Volume`.
+
+We can interpret the coefficients like this:
+
+- The volume of a tree is expected to increase by 1 ft^3 on average for each additional foot the tree grows.
+- Actually, we can’t really interpret the intercept because it doesn’t make sense to consider a tree of no height - that would be extrapolating the data. But suppose we modeled the 50 yard freestyle time of a group of swimmers as a function of the number of days since they started attending practice, and got a intercept coefficient of 50 seconds. Then we could interpret the y-intercept as “On average, swimmers with 0 days of training have a time of 50 seconds for the 50 freestyle.”
+
+We can use the `ggplot2` package to visualize the data points and this line. The details are left to another chapter, but we specify the data set, which variables go on which axis, and that we want to use a linear model.
+
+```{r}
+ggplot(arr, aes(x=Height, y=Volume)) + 
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE, fullrange=FALSE)
+```
+By inspection, the line seems like it fits moderately well, especially for smaller trees. We'll make this precise shortly.
+
+## Correlation
+
+Generally, a correlation coefficient describes a statistical relationship between two variables. "Correlation" usually refers to Pearson's correlation coefficient, which is a measure of linear correlation between two sets of data.
+
+
+
+INSERT FORMULA
+
+Find the correlation by standardizing the variables and then running lm again and then using the slope
+
+```{r}
+arr$stHeight <- (arr$Height - mean(arr$Height))/sd(arr$Height)
+arr$stVolume <- (arr$Volume - mean(arr$Volume))/sd(arr$Volume)
+linmodst <- lm(stVolume ~ stHeight, data = arr) 
+linmodst
+
+```
+
+
+Just R correlation from the package
+```{r}
+cor(arr)
+```
+
+TODO: COMEBACK TO OTHER TYPES OF CORRELATION
+
+## Multiple linear regression
+Try to use urban pop + assault to predict murder
+
+## ANOVA/t-tests
+Comparison of means
+Predictors are discrete
+Says that the mean of this set is different
+
+Josh Starner stat quest - linear regression and anova
+
+t: 2 groups
+F: more groups
+
+```{r}
+data("mtcars")
+cars <- mtcars
+cars
+```
+```{r}
+cor(cars)
+```
+Negative correlation - as the fuel efficiency goes up, the hp/strength of the vehicle goes down
+
+
+```{r}
+fit <- lm(mpg ~ hp, cars)
+fit
+
+ggplot(cars, aes(x=hp, y=mpg)) + 
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE, fullrange=FALSE)
+```
+
+Try multiple regression
+```{r}
+fit2 <- lm(mpg ~ hp + wt, cars)
+fit2
+
+ggplot(cars, aes(x=hp, y=mpg, color=wt)) + 
+  geom_point() +
+  geom_smooth(method="lm", se=FALSE, fullrange=FALSE)
+```
+```{r}
+res <- aov(mpg ~ factor(cyl), cars)
+summary(res)
+```
+
+Is there an effect of cyl on mpg? Yes, really low p-value
+Two of the groups (at least) had a meaningful difference but we don't know which one
+-> post-hoc comparisions next week
