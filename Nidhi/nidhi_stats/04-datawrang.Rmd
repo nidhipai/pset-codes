@@ -1,3 +1,18 @@
 # Data Wrangling
 
 Go over tidyverse functions here
+
+
+## Principle components analysis
+Even if there's error associated with each particular test, they all aim to measure something undernearth and that thing is hypothesized to be the same
+
+EX) ravens, letters, numbers - are they measuring the same thing? that is, are they measuring the same factor?
+
+We could use the slope of the line to see how related they are
+Project each point (not residual way) onto the line and use that point as their "intelligence score"
+THe principal component analysis shows that the "factor" is fluid intelligence
+
+
+### Factor Analysis
+Modeling the variance that is common to the two types - get rid of sleepiness factor that everyone has
+Kind of like dimension reduction

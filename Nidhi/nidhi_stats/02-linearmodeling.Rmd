@@ -158,3 +158,21 @@ summary(res)
 Is there an effect of cyl on mpg? Yes, really low p-value
 Two of the groups (at least) had a meaningful difference but we don't know which one
 -> post-hoc comparisions next week
+
+
+## Logistic Regression
+Generalized linear regression
+Predicting cateogrial variable (binary) with cont var
+For classification
+Maximum likelihood - assuming some underlying distribution and then finding the parameters of the curve that are most likely to generate the data
+
+
+## Factorial ANOVA
+Subgoal and step and also physics vs math -> get interaction variable 
+Parrel lines is lack of interaction
+If lines cross or not paralell then whther subgoal works depends on type of problem
+
+
+
+
+
